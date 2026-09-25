@@ -1,0 +1,8 @@
+{
+  "toolmode": "Automatically form",
+  "waiting": "Waiting for the last clay action. Release and press right-click again shortly.",
+  "timeout": "The server did not confirm the clay form. Automation paused; release and press right-click to retry.",
+  "material": "Hold more matching clay to continue forming.",
+  "unsupported": "This clay form cannot be completed with the available forming actions.",
+  "error": "Clay forming stopped unexpectedly. See client-main.log for details."
+}

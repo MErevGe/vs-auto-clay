@@ -1,0 +1,9 @@
+.tools/
+**/bin/
+**/obj/
+**/TestResults/
+Releases/
+.vs/
+.idea/
+*.user
+Directory.Build.props.user
