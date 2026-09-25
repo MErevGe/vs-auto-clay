@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: tuesday
+    open-pull-requests-limit: 5
+  - package-ecosystem: nuget
+    directories:
+      - /
+      - /AutoClay
+      - /AutoClay.Tests
+      - /CakeBuild
+    schedule:
+      interval: weekly
+      day: tuesday
+    open-pull-requests-limit: 5
+    groups:
+      development-dependencies:
+        patterns:
+          - '*'
+        update-types:
+          - minor
+          - patch
