@@ -1,5 +1,7 @@
 # Auto Clay
 
+![Auto Clay](docs/images/auto-clay-cover.png)
+
 Client-Mod für **Vintage Story 1.22.7**. Clay-Modelle automatisch fertigstellen, solange die rechte Maustaste gedrückt bleibt. Die Kamera bleibt dabei in der Blickrichtung vom Start fixiert.
 
 ## Installation und Bedienung
