@@ -6,7 +6,7 @@ Client-Mod für **Vintage Story 1.22.7**. Clay-Modelle automatisch fertigstellen
 
 ## Installation und Bedienung
 
-1. `Releases/autoclay_0.1.0.zip` unverändert in den clientseitigen `VintagestoryData/Mods`-Ordner kopieren und das Spiel neu starten.
+1. `Releases/vsautoclay_0.1.0.zip` unverändert in den clientseitigen `VintagestoryData/Mods`-Ordner kopieren und das Spiel neu starten. Beim Umstieg die bisherige `autoclay_0.1.0.zip` dieser Mod entfernen.
 2. Ton platzieren und das gewünschte Rezept auswählen.
 3. Passenden Ton in der Hand halten, das Werkstück anvisieren und **F → Automatisch formen** auswählen. Der Eintrag hat ein **A** als Symbol.
 4. **Rechtsklick gedrückt halten.** Loslassen pausiert und gibt die Kamera frei. Erneutes Gedrückthalten setzt die Form fort.
@@ -31,7 +31,7 @@ Die Mod verwendet das normale Clayforming-System. Mod-Rezepte mit demselben Syst
 
 ## Einstellungen
 
-Nach dem ersten Laden entsteht `VintagestoryData/ModConfig/autoclay.json`:
+Nach dem ersten Laden entsteht `VintagestoryData/ModConfig/vsautoclay.json`:
 
 ```json
 {
@@ -64,7 +64,7 @@ $env:VINTAGE_STORY = 'C:\Pfad\zu\Vintagestory'
 ./build.ps1
 ```
 
-Ergebnis: `Releases/autoclay_0.1.0.zip`. Die ZIP enthält ausschließlich `AutoClay.dll`, `modinfo.json` und Sprachdateien. Build- und Testpakete werden nicht ausgeliefert.
+Ergebnis: `Releases/vsautoclay_0.1.0.zip`. Die ZIP enthält ausschließlich `AutoClay.dll`, `modinfo.json` und Sprachdateien. Build- und Testpakete werden nicht ausgeliefert.
 
 ## Prüfung
 

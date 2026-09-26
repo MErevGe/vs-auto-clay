@@ -38,7 +38,7 @@ internal sealed class ClayController : IRenderer
         api.Event.MouseUp += OnMouseUp;
         api.Event.MouseMove += OnMouseMove;
         api.Event.LeaveWorld += OnLeaveWorld;
-        api.Event.RegisterRenderer(this, EnumRenderStage.Before, "autoclay-camera");
+        api.Event.RegisterRenderer(this, EnumRenderStage.Before, "vsautoclay-camera");
         tickListener = api.Event.RegisterGameTickListener(OnTick, 20);
     }
 
@@ -212,7 +212,7 @@ internal sealed class ClayController : IRenderer
         api.Input.MousePitch = pitch;
     }
 
-    private void Notify(string code) => api.TriggerIngameError(this, "autoclay-" + code, Lang.Get("autoclay:" + code));
+    private void Notify(string code) => api.TriggerIngameError(this, "vsautoclay-" + code, Lang.Get("vsautoclay:" + code));
 
     private void OnLeaveWorld()
     {

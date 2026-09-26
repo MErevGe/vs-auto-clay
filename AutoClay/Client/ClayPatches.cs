@@ -33,8 +33,8 @@ internal static class ClayPatches
         private static void Postfix(ref SkillItem[]? __result)
         {
             if (__result == null || api == null) return;
-            mode ??= new SkillItem { Code = new AssetLocation("autoclay", "automatic") }.WithLetterIcon(api, "A");
-            mode.Name = Lang.Get("autoclay:toolmode");
+            mode ??= new SkillItem { Code = new AssetLocation("vsautoclay", "automatic") }.WithLetterIcon(api, "A");
+            mode.Name = Lang.Get("vsautoclay:toolmode");
             if (!__result.Any(item => item.Code.Equals(mode.Code))) __result = [.. __result, mode];
         }
     }

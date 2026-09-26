@@ -21,18 +21,18 @@ public sealed class AutoClayModSystem : ModSystem
             api.Logger.Error("Auto Clay supports Vintage Story 1.22.7. Found {0}; automation is disabled.", version);
             return;
         }
-        var config = api.LoadModConfig<AutoClayConfig>("autoclay.json") ?? new AutoClayConfig();
+        var config = api.LoadModConfig<AutoClayConfig>("vsautoclay.json") ?? new AutoClayConfig();
         config.Validate();
-        api.StoreModConfig(config, "autoclay.json");
+        api.StoreModConfig(config, "vsautoclay.json");
         controller = new ClayController(api, config);
         ClayPatches.Initialize(api, controller);
-        harmony = new Harmony("autoclay.client");
+        harmony = new Harmony("vsautoclay.client");
         harmony.PatchAll(typeof(AutoClayModSystem).Assembly);
     }
 
     public override void Dispose()
     {
-        harmony?.UnpatchAll("autoclay.client");
+        harmony?.UnpatchAll("vsautoclay.client");
         controller?.Dispose();
         ClayPatches.Dispose();
         base.Dispose();
