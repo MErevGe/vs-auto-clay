@@ -1,0 +1,15 @@
+{
+  "type": "Code",
+  "modid": "autoclay",
+  "name": "Auto Clay",
+  "authors": ["MErevGe"],
+  "description": "Hold right-click to complete clay forms with normal material consumption and a locked view.",
+  "version": "0.1.0",
+  "side": "Client",
+  "requiredOnClient": false,
+  "requiredOnServer": false,
+  "dependencies": {
+    "game": "1.22.7",
+    "survival": "1.22.7"
+  }
+}

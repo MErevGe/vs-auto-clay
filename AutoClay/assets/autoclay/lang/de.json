@@ -1,0 +1,8 @@
+{
+  "toolmode": "Automatisch formen",
+  "waiting": "Die letzte Tonaktion wird noch bestätigt. Kurz loslassen und erneut Rechtsklick drücken.",
+  "timeout": "Der Server hat die Tonform nicht bestätigt. Automatik pausiert; zum Fortsetzen loslassen und erneut Rechtsklick drücken.",
+  "material": "Nimm weiteren passenden Ton in die Hand, um weiterzuformen.",
+  "unsupported": "Diese Tonform lässt sich mit den verfügbaren Formaktionen nicht fertigstellen.",
+  "error": "Die Tonautomatik wurde wegen eines Fehlers angehalten. Details stehen in client-main.log."
+}
