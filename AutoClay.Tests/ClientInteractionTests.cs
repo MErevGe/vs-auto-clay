@@ -133,8 +133,10 @@ public sealed class ClientInteractionTests
         try
         {
             mod.StartClientSide(game.Api);
+            game.Api.Received().LoadModConfig<AutoClayConfig>("vsautoclay.json");
+            game.Api.Received().StoreModConfig(Arg.Any<AutoClayConfig>(), "vsautoclay.json");
             ClayPatches.Initialize(game.Api, game.Controller);
-            var automatic = new SkillItem { Code = new AssetLocation("autoclay", "automatic") };
+            var automatic = new SkillItem { Code = new AssetLocation("vsautoclay", "automatic") };
             typeof(ClayPatches).GetField("mode", BindingFlags.NonPublic | BindingFlags.Static)!.SetValue(null, automatic);
             SkillItem[] vanilla = Enumerable.Range(0, 4).Select(index => new SkillItem { Code = new AssetLocation("mode" + index) }).ToArray();
             typeof(ItemClay).GetField("toolModes", BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(game.Slot.Itemstack!.Collectible, vanilla);
@@ -154,7 +156,7 @@ public sealed class ClientInteractionTests
             prefix.Invoke(null, selection);
             Assert.False(game.Controller.Enabled);
             Assert.Equal(0, selection[0]);
-            Assert.Equal(4, Harmony.GetAllPatchedMethods().Count(method => Harmony.GetPatchInfo(method)?.Owners.Contains("autoclay.client") == true));
+            Assert.Equal(4, Harmony.GetAllPatchedMethods().Count(method => Harmony.GetPatchInfo(method)?.Owners.Contains("vsautoclay.client") == true));
         }
         finally
         {
@@ -236,7 +238,7 @@ public sealed class ClientInteractionTests
         game.Press();
         game.Tick();
         Assert.True(game.Slot.Empty);
-        game.Api.Received().TriggerIngameError(game.Controller, "autoclay-material", Arg.Any<string>());
+        game.Api.Received().TriggerIngameError(game.Controller, "vsautoclay-material", Arg.Any<string>());
         game.Api.Input.MouseYaw = 1;
         game.Controller.OnRenderFrame(0.02f, EnumRenderStage.Before);
         Assert.Equal(1, game.Api.Input.MouseYaw);

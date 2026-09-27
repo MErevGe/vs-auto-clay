@@ -1,6 +1,6 @@
 {
   "type": "Code",
-  "modid": "autoclay",
+  "modid": "vsautoclay",
   "name": "Auto Clay",
   "authors": ["MErevGe"],
   "description": "Hold right-click to complete clay forms with normal material consumption and a locked view.",
