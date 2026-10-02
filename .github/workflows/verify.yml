@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - security/harden-repository
+    tags:
+      - 'v*'
   pull_request:
   workflow_dispatch:
 
@@ -136,6 +138,24 @@ jobs:
           upload: false
           output: ${{ runner.temp }}/codeql-results
 
+      - name: Analyze release automation and workflows
+        run: |
+          set -euo pipefail
+          for language in python actions; do
+            case "$language" in
+              python) checksum=ea86393c6c812542ae5a3a7122bcc760873707a50b25cc47d2fd7cfd514b0cb0 ;;
+              actions) checksum=71247327cf3afe4115acc546fe3ac77f2865928205d7688d6a0b7153e055603f ;;
+            esac
+            bundle="$RUNNER_TEMP/codeql-$language.tar.zst"
+            directory="$RUNNER_TEMP/codeql-$language"
+            curl --fail --silent --show-error --location --retry 3 "https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.27.1/codeql-bundle-$language-linux64.tar.zst" -o "$bundle"
+            echo "$checksum  $bundle" | sha256sum --check --strict
+            mkdir -p "$directory"
+            tar --zstd -xf "$bundle" -C "$directory"
+            "$directory/codeql/codeql" database create "$RUNNER_TEMP/db-$language" --language="$language" --source-root="$GITHUB_WORKSPACE" --threads=2
+            "$directory/codeql/codeql" database analyze "$RUNNER_TEMP/db-$language" "codeql/$language-queries:codeql-suites/$language-security-extended.qls" --format=sarif-latest --output="$RUNNER_TEMP/codeql-results/$language.sarif" --threads=2
+          done
+
       - name: Enforce code security findings
         run: |
           python3 - <<'PY'
@@ -160,3 +180,19 @@ jobs:
               raise SystemExit('Blocking CodeQL findings: ' + ', '.join(failures))
           print('No blocking CodeQL findings')
           PY
+
+      - name: Validate the release package and record its provenance
+        id: package
+        run: python3 .github/scripts/release.py package
+
+      - name: Upload the verified release package
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: mod-package-${{ github.run_attempt }}
+          path: |
+            Releases/${{ steps.package.outputs.package }}
+            Releases/SHA256SUMS
+            Releases/release.json
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
