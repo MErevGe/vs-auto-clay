@@ -51,6 +51,25 @@ jobs:
           gitleaks git --redact --no-banner --log-opts=--all .
           git diff --check
 
+      - name: Analyze release automation and workflows
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/automation-results"
+          for language in python actions; do
+            case "$language" in
+              python) checksum=ea86393c6c812542ae5a3a7122bcc760873707a50b25cc47d2fd7cfd514b0cb0 ;;
+              actions) checksum=71247327cf3afe4115acc546fe3ac77f2865928205d7688d6a0b7153e055603f ;;
+            esac
+            bundle="$RUNNER_TEMP/codeql-$language.tar.zst"
+            directory="$RUNNER_TEMP/codeql-$language"
+            curl --fail --silent --show-error --location --retry 3 "https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.27.1/codeql-bundle-$language-linux64.tar.zst" -o "$bundle"
+            echo "$checksum  $bundle" | sha256sum --check --strict
+            mkdir -p "$directory"
+            tar --zstd -xf "$bundle" -C "$directory"
+            "$directory/codeql/codeql" database create "$RUNNER_TEMP/db-$language" --language="$language" --source-root="$GITHUB_WORKSPACE" --threads=2
+            "$directory/codeql/codeql" database analyze "$RUNNER_TEMP/db-$language" "codeql/$language-queries:codeql-suites/$language-security-extended.qls" --format=sarif-latest --output="$RUNNER_TEMP/automation-results/$language.sarif" --threads=2
+          done
+
       - name: Review dependency changes
         if: github.event_name == 'pull_request'
         uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48
@@ -138,37 +157,18 @@ jobs:
           upload: false
           output: ${{ runner.temp }}/codeql-results
 
-      - name: Analyze release automation and workflows
-        run: |
-          set -euo pipefail
-          for variable in ${!CODEQL_@} ${!SEMMLE_@}; do
-            unset "$variable"
-          done
-          unset LD_PRELOAD
-          for language in python actions; do
-            case "$language" in
-              python) checksum=ea86393c6c812542ae5a3a7122bcc760873707a50b25cc47d2fd7cfd514b0cb0 ;;
-              actions) checksum=71247327cf3afe4115acc546fe3ac77f2865928205d7688d6a0b7153e055603f ;;
-            esac
-            bundle="$RUNNER_TEMP/codeql-$language.tar.zst"
-            directory="$RUNNER_TEMP/codeql-$language"
-            curl --fail --silent --show-error --location --retry 3 "https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.27.1/codeql-bundle-$language-linux64.tar.zst" -o "$bundle"
-            echo "$checksum  $bundle" | sha256sum --check --strict
-            mkdir -p "$directory"
-            tar --zstd -xf "$bundle" -C "$directory"
-            "$directory/codeql/codeql" database create "$RUNNER_TEMP/db-$language" --language="$language" --source-root="$GITHUB_WORKSPACE" --threads=2
-            "$directory/codeql/codeql" database analyze "$RUNNER_TEMP/db-$language" "codeql/$language-queries:codeql-suites/$language-security-extended.qls" --format=sarif-latest --output="$RUNNER_TEMP/codeql-results/$language.sarif" --threads=2
-          done
-
       - name: Enforce code security findings
         run: |
           python3 - <<'PY'
           import json
           import os
           from pathlib import Path
-          reports = list((Path(os.environ['RUNNER_TEMP']) / 'codeql-results').glob('*.sarif'))
-          if not reports:
-              raise SystemExit('CodeQL produced no SARIF reports')
+          reports = []
+          for directory in ['codeql-results', 'automation-results']:
+              found = list((Path(os.environ['RUNNER_TEMP']) / directory).glob('*.sarif'))
+              if not found:
+                  raise SystemExit(f'CodeQL produced no SARIF reports in {directory}')
+              reports.extend(found)
           failures = []
           for report in reports:
               for run in json.loads(report.read_text())['runs']:
