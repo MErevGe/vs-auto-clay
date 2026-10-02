@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>bin/$(Configuration)/Mods/mod</OutputPath>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="VintagestoryAPI" HintPath="$(VINTAGE_STORY)/VintagestoryAPI.dll" Private="false" />
+    <Reference Include="VintagestoryLib" HintPath="$(VINTAGE_STORY)/VintagestoryLib.dll" Private="false" />
+    <Reference Include="VSSurvivalMod" HintPath="$(VINTAGE_STORY)/Mods/VSSurvivalMod.dll" Private="false" />
+    <Reference Include="0Harmony" HintPath="$(VINTAGE_STORY)/Lib/0Harmony.dll" Private="false" />
+    <Reference Include="CairoSharp" HintPath="$(VINTAGE_STORY)/Lib/CairoSharp.dll" Private="false" />
+    <Content Include="modinfo.json;assets/**/*" CopyToOutputDirectory="PreserveNewest" />
+    <InternalsVisibleTo Include="AutoClay.Tests" />
+  </ItemGroup>
+  <Target Name="CheckGamePath" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(VINTAGE_STORY)/VintagestoryAPI.dll')" Text="Set VINTAGE_STORY to your Vintage Story 1.22.7 installation directory." />
+  </Target>
+</Project>
