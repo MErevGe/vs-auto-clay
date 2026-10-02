@@ -141,6 +141,10 @@ jobs:
       - name: Analyze release automation and workflows
         run: |
           set -euo pipefail
+          for variable in ${!CODEQL_@} ${!SEMMLE_@}; do
+            unset "$variable"
+          done
+          unset LD_PRELOAD
           for language in python actions; do
             case "$language" in
               python) checksum=ea86393c6c812542ae5a3a7122bcc760873707a50b25cc47d2fd7cfd514b0cb0 ;;
