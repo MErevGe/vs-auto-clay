@@ -66,6 +66,28 @@ $env:VINTAGE_STORY = 'C:\Pfad\zu\Vintagestory'
 
 Ergebnis: `Releases/vsautoclay_0.1.0.zip`. Die ZIP enthält ausschließlich `AutoClay.dll`, `modinfo.json` und Sprachdateien. Build- und Testpakete werden nicht ausgeliefert.
 
+## GitHub-Releases
+
+1. Die neue Version im Format `X.Y.Z` in `AutoClay/modinfo.json` und `AutoClay/AutoClay.csproj` eintragen und den geprüften Änderungs-PR nach `main` mergen.
+2. Einen annotierten, signierten Tag auf diesem Commit erstellen und pushen, beispielsweise für die bestehende Version:
+
+   ```bash
+   git fetch origin
+   git tag -s v0.1.0 origin/main -m 'Auto Clay 0.1.0'
+   git verify-tag v0.1.0
+   git push origin refs/tags/v0.1.0
+   ```
+
+3. Der Workflow **Verify** baut und prüft den getaggten Stand mit VS 1.22.7, einschließlich Tests, Abdeckung, Abhängigkeitsprüfung, Secret-Scan und CodeQL. Erst nach Erfolg veröffentlicht **Release** die Datei `vsautoclay_X.Y.Z.zip` und `SHA256SUMS` mit automatisch erzeugten Release Notes.
+
+Die Tag-Signatur muss zum öffentlichen SSH-Schlüssel in `.github/release-signers` passen. Der private Schlüssel bleibt lokal. Der Tag muss auf einen Commit in der geschützten `main`-Historie zeigen; Tag, Projektversion und Mod-Metadaten müssen übereinstimmen. Die Veröffentlichung verwendet die Workflow- und Schlüsselregeln von `main` und das bereits geprüfte Build-Artefakt. Nur der letzte Veröffentlichungsschritt erhält Schreibrechte.
+
+Unter **Actions → Release → Run workflow** auf Branch **main** ist ein manueller Prüflauf möglich: `dry_run` eingeschaltet lassen und das Tag-Feld leer lassen, um das letzte erfolgreiche Build für den aktuellen `main`-Commit einschließlich ZIP und Prüfsumme zu prüfen. Mit eingetragenem Tag wird zusätzlich dessen Signatur geprüft. Der Prüflauf veröffentlicht nichts.
+
+Bei einem fehlgeschlagenen Release-Lauf kann derselbe Tag dort mit ausgeschaltetem `dry_run` erneut veröffentlicht werden. Vorher muss ein erfolgreicher **Verify**-Lauf für den Tag vorhanden sein. Build-Artefakte bleiben 14 Tage verfügbar; bei Ablauf **Verify** für den Tag erneut starten. Bereits veröffentlichte Releases werden nicht überschrieben. Bestehende Versions-Tags dürfen weder verschoben noch gelöscht werden; Korrekturen erhalten eine neue Version.
+
+Die Pipeline veröffentlicht auf GitHub. Das Hochladen auf die Vintage-Story-ModDB erfolgt weiterhin manuell.
+
 ## Prüfung
 
 ```bash
