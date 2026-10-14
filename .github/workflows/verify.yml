@@ -99,7 +99,7 @@ jobs:
           curl --fail --silent --show-error --location --retry 3 "https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.27.1/codeql-bundle-$CODEQL_LANGUAGE-linux64.tar.zst" -o "$RUNNER_TEMP/codeql-bundle.tar.zst"
           echo "$CODEQL_CHECKSUM  $RUNNER_TEMP/codeql-bundle.tar.zst" | sha256sum --check --strict
 
-      - uses: github/codeql-action/init@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2
+      - uses: github/codeql-action/init@24c54180a607b1449ed407dd24f251e4e9147c8d
         with:
           tools: ${{ runner.temp }}/codeql-bundle.tar.zst
           languages: ${{ steps.analysis.outputs.language }}
